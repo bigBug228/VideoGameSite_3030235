@@ -25,7 +25,7 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
- app.use(express.static('../frontend/dist'));
+ app.use(express.static('./dist'));
 
 app.use(cors());
 
