@@ -1,7 +1,5 @@
 const express = require('express');
-//Это чтобы проверять можно было с сайта на сервер в режиме npm run serve
-//То есть надо расскомментировать это чтобы проверить как работает без раздачи
-//статических файлов с сервера и еще к этому с 32 по 41 строчку тоже раскомментировать
+
 const cors = require('cors');
 
 const { celebrate, Joi, errors } = require('celebrate');
@@ -25,26 +23,19 @@ const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
-// const { PORT = 4000 } = process.env;
-
 const app = express();
-// Это я пока тестировал так записал, чтобы не копировать туда-обратно)
+
  app.use(express.static('../frontend/dist'));
-// app.set('view engine', 'ejs');
-// app.get('/', (req, res) => {
-//   res.render('index');
-// });
-//Это чтобы проверять можно было с сайта на сервер в режиме npm run serve
+
 app.use(cors());
 
-//Это чтобы проверять можно было с сайта на сервер в режиме npm run serve
-const allowCrossDomain = function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  next();
-};
-app.use(allowCrossDomain);
+// const allowCrossDomain = function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', '*');
+//   res.header('Access-Control-Allow-Headers', '*');
+//   next();
+// };
+// app.use(allowCrossDomain);
 
 mongoose.connect('mongodb://localhost:27017/AssignmentDatabase', {
   useNewUrlParser: true,
@@ -53,12 +44,6 @@ mongoose.connect('mongodb://localhost:27017/AssignmentDatabase', {
 app.use(bodyParser.json());
 
 app.use(requestLogger);
-
-app.get('api/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.post(
   '/api/signup',
@@ -91,7 +76,7 @@ app.use(auth);
 app.use('/api/users', routesUsers);
 app.use('/api/posts', routesPosts);
 app.use('*', () => {
-  throw new NotFoundError('Запрашиваемая страница не существует!');
+  throw new NotFoundError('Requested Page does not exist!');
 });
 app.use(errorLogger);
 app.use(errors());
@@ -101,8 +86,8 @@ app.use((err, req, res, next) => {
     .status(statusCode)
     .send({
       message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : `Произошла ошибка: ${message}`,
+        ? 'Server error'
+        : `Error: ${message}`,
     });
   next();
 });

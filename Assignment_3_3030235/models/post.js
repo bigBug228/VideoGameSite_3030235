@@ -11,10 +11,10 @@ const postSchema = new mongoose.Schema({
   },
   link: {
     type:String,
-    // required:true,
+    required:true,
     validate: {
       validator: (v) => sampleUrl.test(v),
-      message: 'ВВедите ссылку на изображение!! в формате "http://yandex/...."',
+      message: 'Enter link in format "http://google/...."',
     },
   },
   owner: {
@@ -22,11 +22,6 @@ const postSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  // comments: [{
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'user',
-  //   default: [],
-  // }],
   comments: [{
       _id: { type: mongoose.Schema.Types.ObjectId },
       text: { type: String },

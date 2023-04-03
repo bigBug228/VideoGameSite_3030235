@@ -7,9 +7,7 @@ const { sampleUrl } = require('../config');
 const {
   getUsers,
   getUser,
-  changeUser,
   getCurrentUser,
-  changeAvatar,
   deleteUser,
   editUser
 } = require('../controllers/users');
@@ -36,15 +34,6 @@ router.delete(
   }),
   deleteUser,
 );
-router.patch(
-  '/me/avatar',
-  celebrate({
-    body: Joi.object().keys({
-      avatar: Joi.string().pattern(sampleUrl).required(),
-    }),
-  }),
-  changeAvatar,
-);
 router.post(
   '/:userId',
   celebrate({
@@ -59,15 +48,6 @@ router.post(
   }),
   editUser
 );
-router.patch(
-  '/me',
-  celebrate({
-    body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      about: Joi.string().min(2).max(30).required(),
-    }),
-  }),
-  changeUser,
-);
+
 
 module.exports = router;

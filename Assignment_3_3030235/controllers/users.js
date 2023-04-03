@@ -27,7 +27,7 @@ const getUsers = (req, res, next) => {
 const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
-      throw new NotFoundError('Пользователь с таким id не найден!');
+      throw new NotFoundError('User with this id is not found!');
     })
     .then((user) => {
       res
@@ -36,7 +36,7 @@ const getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new CastError('Невалидный id пользователя'));
+        next(new CastError('Unvalid id of user'));
       }
       next(err);
     });
@@ -47,7 +47,7 @@ const postUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        throw new ConflictError('Пользватель с таким email или паролем уже зарегистрирован!');
+        throw new ConflictError('User with this email is already registered!');
       }
       return bcrypt.hash(password, SALT_ROUND);
     })
@@ -56,10 +56,10 @@ const postUser = (req, res, next) => {
       email: req.body.email,
       password: hash,
     }))
-    .then(() => res.status(201).send({ message: `Аккаунт пользователя ${email} успешно создан!` }))
+    .then(() => res.status(201).send({ message: `user account ${email} was created!` }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('Некорректные данные!'));
+        next(new ValidationError('Wrong data!'));
       }
       next(err);
     });
@@ -80,11 +80,11 @@ const getCurrentUser = (req, res, next) => {
     if (user) {
       return res.status(200).send(user);
     }
-    throw new NotFoundError('Пользователь с таким id не найден!');
+    throw new NotFoundError('No user with this id!');
   })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new ValidationError('Некорректные данные!'));
+        next(new ValidationError('Wrong data!'));
       }
       next(err);
     });
@@ -103,41 +103,12 @@ const editUser = (req, res, next) => {
     })
     .catch(next);
 };
-const changeUser = (req, res, next) => {
-  const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .orFail(() => {
-      throw new NotFoundError('User not found!');
-    })
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('Некорректные данные!'));
-      }
-      next(err);
-    });
-};
-
-const changeAvatar = (req, res, next) => {
-  const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { runValidators: true, new: true })
-    .orFail(() => {
-      throw new NotFoundError('Пользователь с таким id не найден!');
-    })
-    .then((userAvatar) => res.status(200).send(userAvatar))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('Hекорректные данные!'));
-      }
-      next(err);
-    });
-};
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findOne({ email })
     .orFail(() => {
-      throw new AuthError('Не правильные имя пользователя или пароль!');
+      throw new AuthError('Wrong name or password!');
     });
 
   return User.findUserByCredentials(email, password)
@@ -161,8 +132,6 @@ module.exports = {
   getCurrentUser,
   getUsers,
   getUser,
-  changeUser,
-  changeAvatar,
   login,
   deleteUser,
   editUser

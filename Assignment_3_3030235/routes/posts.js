@@ -5,7 +5,6 @@ const { celebrate, Joi } = require('celebrate');
 const { sampleUrl } = require('../config');
 
 const {
-  // getPosts,
   createPost,
   deletePost,
   addComment,
@@ -14,7 +13,6 @@ const {
   editComment
 } = require('../controllers/posts');
 
-// router.get('/', getPosts);
 
 router.post(
   '/',
@@ -48,16 +46,6 @@ router.delete(
   }),
   deletePost,
 );
-
-// router.put(
-//   '/comments/:_id',
-//   celebrate({
-//     params: Joi.object().keys({
-//       _id: Joi.string().required().length(24).hex(),
-//     }),
-//   }),
-//   addComment,
-// );
 router.put(
   '/comments/:_id',
   celebrate({
@@ -78,15 +66,6 @@ router.patch(
   editComment
 );
 
-// router.delete(
-//   '/comments/:_id',
-//   celebrate({
-//     params: Joi.object().keys({
-//       _id: Joi.string().required().length(24).hex(),
-//     }),
-//   }),
-//   removeComment,
-// );
 router.delete(
   '/:postId/comments/:commentId',
   celebrate({
